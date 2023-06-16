@@ -59,17 +59,15 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = (blogObject) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-          setMessage(['success', `a new blog "${returnedBlog.title}" by "${returnedBlog.author}" added`])
-        setTimeout(() => {
-          setMessage([null,null])
-        }, 5000)
-      })
+    const returnedBlog = await blogService.create(blogObject)
+    const blog = await blogService.get(returnedBlog.id)
+    setBlogs(blogs.concat(blog))
+    setMessage(['success', `a new blog "${blog.title}" by "${blog.author}" added`])
+    setTimeout(() => {
+      setMessage([null,null])
+    }, 5000)
   }
 
   return (
