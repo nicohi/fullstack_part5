@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlog, setNewBlog] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setURL] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
 
   const [username, setUsername] = useState('')
@@ -55,6 +58,24 @@ const App = () => {
     setUser(null)
   }
 
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title,
+      author,
+      url,
+    }
+
+    blogService
+      .create(blogObject)
+        .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setTitle('')
+        setAuthor('')
+        setURL('')
+      })
+  }
+
   return (
     <>
       { user && <div>
@@ -63,6 +84,11 @@ const App = () => {
                     {user.name} logged in
                     <button onClick={handleLogout}>logout</button>
                   </p>
+                  <h2>create new</h2>
+                  <BlogForm  addBlog={addBlog}
+                             title={title}setTitle={setTitle}
+                             author={author} setAuthor={setAuthor}
+                             url={url} setURL={setURL}  />
                   {blogs.map(blog =>
                     <Blog key={blog.id} blog={blog} />
                   )}
