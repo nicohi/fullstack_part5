@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -10,7 +11,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setURL] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(['error', null])
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -45,9 +46,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setMessage(['error', 'wrong username or password'])
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage([null,null])
       }, 5000)
     }
   }
@@ -70,6 +71,10 @@ const App = () => {
       .create(blogObject)
         .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
+          setMessage(['success', `a new blog "${title}" by "${author}" added`])
+        setTimeout(() => {
+          setMessage([null,null])
+        }, 5000)
         setTitle('')
         setAuthor('')
         setURL('')
@@ -80,6 +85,7 @@ const App = () => {
     <>
       { user && <div>
                   <h2>blogs</h2>
+                  <Notification message={message}/>
                   <p>
                     {user.name} logged in
                     <button onClick={handleLogout}>logout</button>
@@ -96,11 +102,12 @@ const App = () => {
       }
       { !user && <div>
                   <h2>log in to application</h2>
-                   <LoginForm  handleLogin={handleLogin}
-                               username={username}
-                               setUsername={setUsername}
-                               password={password}
-                               setPassword={setPassword} />
+                  <Notification message={message}/>
+                  <LoginForm  handleLogin={handleLogin}
+                              username={username}
+                              setUsername={setUsername}
+                              password={password}
+                              setPassword={setPassword} />
                  </div>
       }
     </>
