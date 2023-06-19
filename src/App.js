@@ -22,7 +22,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs.sort(blogOrder))
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = async (event) => {
+  const handleLogout = async () => {
     window.localStorage.clear()
     blogService.setToken(null)
     setUser(null)
@@ -94,29 +94,29 @@ const App = () => {
   return (
     <>
       { user && <div>
-                  <h2>blogs</h2>
-                  <Notification message={message}/>
-                  <p>
-                    {user.name} logged in
-                    <button onClick={handleLogout}>logout</button>
-                  </p>
-                  <Togglable buttonLabel="create new" ref={blogFormRef}>
-                    <BlogForm  createBlog={addBlog} />
-                  </Togglable>
-                  {blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} deleteBlog={deleteBlog} />
-                  )}
-                </div>
+        <h2>blogs</h2>
+        <Notification message={message}/>
+        <p>
+          {user.name} logged in
+          <button onClick={handleLogout}>logout</button>
+        </p>
+        <Togglable buttonLabel="create new" ref={blogFormRef}>
+          <BlogForm  createBlog={addBlog} />
+        </Togglable>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} deleteBlog={deleteBlog} />
+        )}
+      </div>
       }
       { !user && <div>
-                  <h2>log in to application</h2>
-                  <Notification message={message}/>
-                  <LoginForm  handleLogin={handleLogin}
-                              username={username}
-                              setUsername={setUsername}
-                              password={password}
-                              setPassword={setPassword} />
-                 </div>
+        <h2>log in to application</h2>
+        <Notification message={message}/>
+        <LoginForm  handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword} />
+      </div>
       }
     </>
   )

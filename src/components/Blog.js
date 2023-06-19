@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const Blog = ({blog, user, updateBlog, deleteBlog}) => {
+const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -21,8 +22,8 @@ const Blog = ({blog, user, updateBlog, deleteBlog}) => {
   const likeBlog = async (event) => {
     event.preventDefault()
     const likedBlog = { ...blog,
-                        user: blog.user.id.toString(),
-                        likes: blog.likes + 1 }
+      user: blog.user.id.toString(),
+      likes: blog.likes + 1 }
     updateBlog(likedBlog)
   }
 
@@ -34,7 +35,7 @@ const Blog = ({blog, user, updateBlog, deleteBlog}) => {
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
         <div>
-        {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
+          {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
         </div>
       </div>
       <div style={showWhenVisible}>
@@ -46,6 +47,13 @@ const Blog = ({blog, user, updateBlog, deleteBlog}) => {
       </div>
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  updateBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
 }
 
 export default Blog
