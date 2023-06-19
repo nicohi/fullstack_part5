@@ -40,14 +40,32 @@ test('renders blog title and author by default, url and likes are hidden', () =>
   expect(longDiv).toHaveTextContent(blog.likes)
 })
 
-test('clicking the button calls event handler once', async () => {
+test('renders blog title, author, url, and likes after view is clicked', async () => {
+
+  const { container } = render(<Blog blog={blog} user={user} />)
+
+  const user_ = userEvent.setup()
+  const button = screen.getByText('view')
+  await user_.click(button)
+
+  const longDiv = container.querySelector('.longBlogDiv')
+  expect(longDiv).not.toHaveStyle('display: none')
+  expect(longDiv).toHaveTextContent(blog.title)
+  expect(longDiv).toHaveTextContent(blog.author)
+  expect(longDiv).toHaveTextContent(blog.url)
+  expect(longDiv).toHaveTextContent(blog.likes)
+})
+
+test('updateBlog is called twice when like is clicked twice', async () => {
+
   const mockHandler = jest.fn()
 
-  render(<Blog blog={blog} user={user} />)
+  render(<Blog blog={blog} user={user} updateBlog={mockHandler} />)
 
-  const user = userEvent.setup()
-  const button = screen.getByText('view')
-  await user.click(button)
+  const user_ = userEvent.setup()
+  const button = screen.getByText('like')
+  await user_.click(button)
+  await user_.click(button)
 
-  expect(mockHandler.mock.calls).toHaveLength(1)
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
