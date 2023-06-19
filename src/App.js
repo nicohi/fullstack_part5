@@ -70,6 +70,16 @@ const App = () => {
     }, 5000)
   }
 
+  const updateBlog = async (blogObject) => {
+    const returnedBlog = await blogService.update(blogObject.id, blogObject)
+    const blog = await blogService.get(returnedBlog.id)
+    setBlogs(blogs.map(b => (b.id === blog.id) ? blog : b))
+    setMessage(['success', `blog "${blog.title}" by "${blog.author}" updated`])
+    setTimeout(() => {
+      setMessage([null,null])
+    }, 5000)
+  }
+
   return (
     <>
       { user && <div>
@@ -83,7 +93,7 @@ const App = () => {
                     <BlogForm  createBlog={addBlog} />
                   </Togglable>
                   {blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} />
+                    <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
                   )}
                 </div>
       }
