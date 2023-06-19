@@ -35,7 +35,7 @@ Cypress.Commands.add('login', ({ username, password }) => {
 
 Cypress.Commands.add('createBlog', ({ title, author, url, likes }) => {
   cy.request({
-    url: `${Cypress.env('BACKEND')}/notes`,
+    url: `${Cypress.env('BACKEND')}/blogs`,
     method: 'POST',
     body: { title, author, url, likes },
     headers: {

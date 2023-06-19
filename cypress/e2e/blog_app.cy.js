@@ -47,6 +47,16 @@ describe('Blog app', function() {
       cy.get('.message').should('contain', 'added')
       cy.get('.message').should('have.css', 'color', 'rgb(0, 128, 0)')
     })
+    it('A blog can be liked', function() {
+      const blog =  { title: 'Likeable Blog', author: 'Cypress', url: 'www.com', likes: 10 }
+      cy.createBlog(blog)
+      cy.contains('view').click()
+      cy.contains('like').click()
+
+      cy.get('.message').should('contain', 'updated')
+      cy.get('.message').should('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.contains('likes').should('contain', blog.likes + 1)
+    })
   })
 
 })
