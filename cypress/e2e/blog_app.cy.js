@@ -4,10 +4,17 @@ const rootUser = {
   password: '1234'
 }
 
+const otherUser = {
+  name: 'Other User',
+  username: 'other',
+  password: '1234'
+}
+
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, rootUser)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, otherUser)
     cy.visit('')
   })
   it('Login form is shown', function() {
@@ -48,7 +55,7 @@ describe('Blog app', function() {
       cy.get('.message').should('have.css', 'color', 'rgb(0, 128, 0)')
     })
     it('A blog can be liked', function() {
-      const blog =  { title: 'Likeable Blog', author: 'Cypress', url: 'www.com', likes: 10 }
+      const blog =  { title: 'Likable Blog', author: 'Cypress', url: 'www.com', likes: 10 }
       cy.createBlog(blog)
       cy.contains('view').click()
       cy.contains('like').click()
@@ -56,6 +63,25 @@ describe('Blog app', function() {
       cy.get('.message').should('contain', 'updated')
       cy.get('.message').should('have.css', 'color', 'rgb(0, 128, 0)')
       cy.contains('likes').should('contain', blog.likes + 1)
+    })
+    it('A blog can be deleted by creator', function() {
+      const blog =  { title: 'Deletable Blog', author: 'Cypress', url: 'www.com', likes: 10 }
+      cy.createBlog(blog)
+      cy.contains('view').click()
+      cy.contains('remove').click()
+
+      cy.get('.message').should('contain', 'deleted')
+      cy.get('.message').should('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.get('html').should('not.contain', blog.url)
+    })
+    it('Delete button is only visible for blog creator', function() {
+      const blog =  { title: 'Deletable Blog', author: 'Cypress', url: 'www.com', likes: 10 }
+      cy.createBlog(blog)
+      cy.contains('view').click()
+      cy.contains('remove')
+      cy.login({ username: otherUser.username, password: otherUser.password })
+      cy.contains('view').click()
+      cy.contains('remove').should('not.be.visible')
     })
   })
 
