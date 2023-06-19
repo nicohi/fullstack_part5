@@ -83,6 +83,23 @@ describe('Blog app', function() {
       cy.contains('view').click()
       cy.contains('remove').should('not.be.visible')
     })
+    it('Blogs are sorted by likes', function() {
+      const popular =  { title: 'Popular Blog', author: 'Cypress', url: 'www.com', likes: 1 }
+      const unpopular =  { title: 'Unpopular Blog', author: 'Cypress', url: 'www.com', likes: 0 }
+      cy.createBlog(popular)
+      cy.createBlog(unpopular)
+
+      cy.get('.blogDiv').eq(0).should('contain', popular.title)
+      cy.get('.blogDiv').eq(1).should('contain', unpopular.title)
+
+      cy.get('.blogDiv').eq(1).contains('view').click()
+      cy.get('.blogDiv').eq(1).contains('like').click()
+      cy.wait(500)
+      cy.get('.blogDiv').eq(1).contains('like').click()
+      cy.wait(500)
+      cy.get('.blogDiv').eq(0).should('contain', unpopular.title)
+      cy.get('.blogDiv').eq(1).should('contain', popular.title)
+    })
   })
 
 })
